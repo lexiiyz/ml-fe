@@ -125,7 +125,6 @@ export default function Home() {
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         className="hidden"
-                        capture="environment" 
                     />
                     <div className="flex gap-4 mt-4">
                         <button 
