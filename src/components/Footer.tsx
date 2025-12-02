@@ -10,8 +10,8 @@ export default function Footer() {
                     <Image
                         src="/logo.png" 
                         alt="Fregie Logo"
-                        width={300}
-                        height={100}
+                        width={150}
+                        height={80}
                         className="mr-2 rounded-full"
                     />
                     &copy; {new Date().getFullYear()} Fregie
