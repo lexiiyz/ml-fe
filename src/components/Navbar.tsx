@@ -1,7 +1,22 @@
+// File: src/components/Navbar.js
+import Image from "next/image"; // Import Image dari Next.js
+
 export default function Navbar() {
-    return (
-        <nav className="bg-[#166534] px-15 py-10 text-white text-center shadow-2xs shadow-[rgba(0,0,0,0.2)]">
-            <h1 className="m-0 text-lg">Deteksi Sayur dan Buah</h1>
-        </nav>
-    );
+    return (
+        <nav className="fixed top-0 left-0 w-full bg-green-700/95 backdrop-blur-sm px-6 py-1 text-white shadow-lg z-20 border-b border-green-800/20">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+               
+                <div className="flex items-start"> 
+                    <Image
+                        src="/logo.png" 
+                        alt="Fregie Logo"
+                        width={180} 
+                        height={100}
+                        className="mr-1.5 rounded-full"
+                    />
+                </div>
+                <h2>Kelompok 5 Machine Learning</h2>
+            </div>
+        </nav>
+    );
 }
