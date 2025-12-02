@@ -1,65 +1,104 @@
+"use client";
 import Image from "next/image";
+import Navbar from "@/components/Navbar";
+import { useState } from "react";
+import ResultModal from "@/components/ResultModal";
 
 export default function Home() {
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  
+  // State untuk Hasil & Modal
+  const [result, setResult] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false); 
+  const [loading, setLoading] = useState(false);
+
+  // Fungsi 1: Handle User Pilih Gambar
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+    setLoading(true);
+    
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch("`${API_URL}`/predict", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      
+      // Simpan hasil dan TAMPILKAN MODAL
+      setResult(data.predicted_class);
+      setConfidence(data.confidence);
+      setShowModal(true);
+
+    } catch (error) {
+      console.error(error);
+      alert("Gagal koneksi ke Backend!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fungsi 3: Reset saat tombol 'Coba Lagi' ditekan di modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFile(null);
+    setPreview(null);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="bg-[#f9fafb] min-h-1vh justify-center">
+      <Navbar />
+      <main className="p-2 max-w-1vh mx-0 mt-20 text-center text-black">
+        Ambil Foto Buah atau Sayur yang Ingin Dikenali
+        <div className="my-20">
+          {preview ? (
+            <Image 
+              src={preview} 
+              alt="Preview" 
+              width={300} 
+              height={300} 
+              className="mx-auto rounded-md shadow-2xs shadow-[rgba(0,0,0,0.2)]"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ) : (
+            <div className="w-[300px] h-[300px] mx-auto flex justify-center items-center bg-green-700 border-2 border-dashed border-gray-300 rounded-md">
+              <span className="text-gray-400">Preview Gambar</span>
+            </div>
+          )}
         </div>
+        <input 
+          type="file" 
+          accept="image/*" 
+          onChange={handleFileChange}
+          className="mb-20 bg-[#166534] px-10 py-5 rounded-md cursor-pointer shadow-2xs shadow-[rgba(0,0,0,0.2)]"
+        />
+        <br />
+        <button 
+          onClick={handleUpload}
+          disabled={!file || loading}
+          className="px-10 py-5 mb-20 bg-[#166534] text-white rounded-md cursor-pointer disabled:opacity-50"
+        >
+          {loading ? "Memproses..." : "Deteksi"}
+        </button> 
       </main>
+      <ResultModal 
+          isOpen={showModal}
+          result_class={result}
+          confidence={confidence}
+          onClose={handleCloseModal}
+        />
     </div>
-  );
+  )
 }
