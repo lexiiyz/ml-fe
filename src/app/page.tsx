@@ -22,6 +22,7 @@ export default function Home() {
       setPreview(URL.createObjectURL(selectedFile));
     }
   };
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
   const handleUpload = async () => {
     if (!file) return;
@@ -31,8 +32,7 @@ export default function Home() {
     formData.append("file", file);
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch("`${API_URL}`/predict", {
+      const response = await fetch(`${API_URL}/predict`, {
         method: "POST",
         body: formData,
       });
@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#f9fafb] min-h-1vh justify-center">
+    <div className="bg-[#f9fafb] h-screen justify-center">
       <Navbar />
       <main className="p-2 max-w-1vh mx-0 mt-20 text-center text-black">
         Ambil Foto Buah atau Sayur yang Ingin Dikenali
