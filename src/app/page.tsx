@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#f9fafb] h-screen justify-center">
+    <div className="bg-[#f9fafb] min-h-screen justify-center">
       <Navbar />
       <main className="p-2 max-w-1vh mx-0 mt-20 text-center text-black">
         Ambil Foto Buah atau Sayur yang Ingin Dikenali
