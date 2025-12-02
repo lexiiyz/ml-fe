@@ -1,3 +1,4 @@
+// File: src/app/page.js
 "use client";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
@@ -74,16 +75,20 @@ export default function Home() {
     return (
         <div className="bg-gradient-to-br from-yellow-500 via-green-400 to-blue-50 min-h-screen pt-28">
             <Navbar />
-            <main className="flex-grow w-full max-w-4xl mx-auto p-8 my-10 bg-white rounded-2xl shadow-2xl border border-gray-100 text-center text-gray-800">
+            <main className="flex-grow w-full max-w-4xl mx-auto p-4 sm:p-8 my-5 sm:my-10 bg-white rounded-2xl shadow-2xl border border-gray-100 text-center text-gray-800">
 
-                <h1 className="text-3xl font-extrabold text-green-700 mb-2">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-green-700 mb-2">
                     Kenali Buah & Sayurmu 🍎🥦
                 </h1>
-                <p className="text-lg font-medium text-gray-600 mb-10">
+                <p className="text-base sm:text-lg font-medium text-gray-600 mb-6 sm:mb-10">
                     Unggah foto untuk mendeteksi jenis buah dan sayur.
                 </p>
+                
                 <div className="flex flex-col items-center gap-6">
-                    <div className="w-full max-w-sm h-80 mx-auto transition-all duration-300 relative">
+
+                    {/* Area Preview Gambar (Lebar maksimal 350px, Tinggi fleksibel) */}
+                    {/* Mengganti w-full max-w-sm h-80 menjadi ukuran yang lebih terkontrol */}
+                    <div className="w-full max-w-xs sm:max-w-sm h-[280px] sm:h-[350px] mx-auto transition-all duration-300 relative">
                         {preview ? (
                             <>
                                 <Image 
@@ -110,11 +115,11 @@ export default function Home() {
                                 className="w-full h-full flex flex-col justify-center items-center bg-white border-2 border-dashed border-gray-300 rounded-xl shadow-lg cursor-pointer transition-all hover:border-green-500 hover:shadow-xl"
                                 onClick={handleSelectFileClick}
                             >
-                                <Upload size={48} className="text-green-500 mb-3" />
-                                <span className="text-gray-500 font-semibold">
+                                <Upload size={40} className="text-green-500 mb-3 sm:mb-4" />
+                                <span className="text-sm sm:text-base text-gray-500 font-semibold">
                                     Klik atau Seret Gambar di Sini
                                 </span>
-                                <span className="text-sm text-gray-400 mt-1">(Maks. 5MB, format JPG/PNG)</span>
+                                <span className="text-xs text-gray-400 mt-1">(Maks. 5MB, format JPG/PNG)</span>
                             </div>
                         )}
                     </div>
@@ -125,11 +130,16 @@ export default function Home() {
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         className="hidden"
+                        // Dihapus 'capture' untuk memunculkan opsi Kamera ATAU Galeri
                     />
-                    <div className="flex gap-4 mt-4">
+
+                    {/* Kontainer Tombol (Menggunakan flex-col di sm, dan flex-row di md ke atas) */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 sm:mt-4 w-full max-w-xs sm:max-w-md">
+                        
+                        {/* Tombol Pilih/Ganti Gambar (Dibuat full-width di layar kecil) */}
                         <button 
                             onClick={handleSelectFileClick}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-300 
+                            className={`flex items-center justify-center gap-2 w-full px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all duration-300 
                                       ${file ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' : 'bg-green-600 text-white hover:bg-green-700 shadow-md'}
                                     `}
                         >
@@ -137,11 +147,12 @@ export default function Home() {
                             {file ? "Ganti Gambar" : "Pilih Gambar"}
                         </button>
 
+                        {/* Tombol Deteksi (Dibuat full-width di layar kecil) */}
                         <button 
                             onClick={handleUpload}
                             disabled={!file || loading}
-                            className={`flex items-center gap-2 px-8 py-3 rounded-full font-bold transition-all duration-300 
-                                      ${file && !loading ? 'bg-green-700 text-white shadow-lg hover:bg-green-800 hover:scale-[1.05]' : 'bg-gray-400 text-white cursor-not-allowed'}
+                            className={`flex items-center justify-center gap-2 w-full px-4 sm:px-8 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all duration-300 
+                                      ${file && !loading ? 'bg-green-700 text-white shadow-lg hover:bg-green-800 hover:scale-[1.03]' : 'bg-gray-400 text-white cursor-not-allowed'}
                                       disabled:opacity-70
                                     `}
                         >
@@ -151,7 +162,7 @@ export default function Home() {
                                     Memproses...
                                 </>
                             ) : (
-                                "Deteksi"
+                                "Deteksi Sekarang"
                             )}
                         </button> 
                     </div>
